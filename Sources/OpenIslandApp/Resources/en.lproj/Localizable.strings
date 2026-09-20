@@ -101,6 +101,14 @@
 "settings.appearance.staleThreshold.tenMinutes" = "10 min";
 "settings.appearance.staleThreshold.twentyMinutes" = "20 min";
 "settings.appearance.staleThreshold.never" = "Never";
+"settings.appearance.rogLighting.title" = "ROG Design";
+"settings.appearance.rogLighting.note" = "Layered neon lighting around the MacBook notch. External displays stay unchanged.";
+"settings.appearance.rogLighting.enable" = "Enable ROG lighting";
+"settings.appearance.rogLighting.enableNote" = "Adds concentric magenta, purple, cyan, and blue neon rings around the notch.";
+"settings.appearance.rogLighting.mode.breathing" = "Breathing";
+"settings.appearance.rogLighting.mode.spectrumFlow" = "Spectrum flow";
+"settings.appearance.rogLighting.mode.pulse" = "Energy pulse";
+"settings.appearance.rogLighting.mode.staticGlow" = "Static glow";
 "settings.appearance.preview.permissionNeeded" = "Permission needed";
 "settings.appearance.preview.agentEditing" = "Claude · editing";
 "settings.appearance.preview.approveShellCommand" = "Approve shell command";

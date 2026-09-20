@@ -32,6 +32,7 @@ struct AppearanceSettingsPane: View {
                 displayProfilePart
                 notchPersonalizationPart
                 sessionListPersonalizationPart
+                rogLightingPart
             }
             .padding(24)
             .frame(maxWidth: .infinity, alignment: .topLeading)
@@ -129,6 +130,103 @@ struct AppearanceSettingsPane: View {
         }
     }
 
+    // MARK: - ROG lighting
+
+    private var rogLightingPart: some View {
+        VStack(alignment: .leading, spacing: 18) {
+            sectionHeader(
+                title: lang.t("settings.appearance.rogLighting.title"),
+                note: lang.t("settings.appearance.rogLighting.note")
+            )
+
+            HStack(alignment: .center, spacing: 16) {
+                VStack(alignment: .leading, spacing: 5) {
+                    Text(lang.t("settings.appearance.rogLighting.enable"))
+                        .font(.system(size: 13.5, weight: .semibold))
+                        .foregroundStyle(V6Palette.paper.opacity(0.94))
+                    Text(lang.t("settings.appearance.rogLighting.enableNote"))
+                        .font(.system(size: 11.5, weight: .medium))
+                        .foregroundStyle(Color.white.opacity(0.42))
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                Spacer(minLength: 16)
+
+                Toggle(
+                    lang.t("settings.appearance.rogLighting.enable"),
+                    isOn: Binding(
+                        get: { model.rogNotchLightingEnabled },
+                        set: { model.rogNotchLightingEnabled = $0 }
+                    )
+                )
+                .toggleStyle(.switch)
+                .labelsHidden()
+            }
+            .padding(16)
+            .background(
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .fill(Color.white.opacity(model.rogNotchLightingEnabled ? 0.06 : 0.025))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .stroke(
+                        model.rogNotchLightingEnabled
+                            ? Color(red: 1.0, green: 0.18, blue: 0.47).opacity(0.55)
+                            : Color.white.opacity(0.08),
+                        lineWidth: model.rogNotchLightingEnabled ? 1.5 : 1
+                    )
+            )
+
+            if model.rogNotchLightingEnabled {
+                HStack(spacing: 12) {
+                    ForEach(ROGNotchLightingMode.allCases) { mode in
+                        rogLightingModeCard(mode)
+                    }
+                }
+                .transition(.opacity.animation(.easeOut(duration: 0.18)))
+            }
+        }
+    }
+
+    private func rogLightingModeCard(_ mode: ROGNotchLightingMode) -> some View {
+        let selected = model.rogNotchLightingMode == mode
+        return Button {
+            model.rogNotchLightingMode = mode
+        } label: {
+            VStack(spacing: 11) {
+                ZStack {
+                    ROGNotchLightingEffect(shape: V6ClosedPillShape(), mode: mode)
+                        .frame(width: 82, height: 18)
+
+                    V6ClosedPillShape()
+                        .fill(Color.black)
+                        .frame(width: 82, height: 18)
+                }
+                .frame(height: 34, alignment: .center)
+
+                Text(title(for: mode))
+                    .font(.system(size: 11.5, weight: .medium))
+                    .foregroundStyle(Color.white.opacity(0.85))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.85)
+            }
+            .padding(12)
+            .frame(maxWidth: .infinity)
+            .background(
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .fill(Color.white.opacity(selected ? 0.07 : 0.02))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .stroke(
+                        selected ? Color(red: 1.0, green: 0.18, blue: 0.47).opacity(0.85) : Color.white.opacity(0.08),
+                        lineWidth: selected ? 1.5 : 1
+                    )
+            )
+        }
+        .buttonStyle(.plain)
+    }
+
     // MARK: - Session list part
 
     private var sessionListPersonalizationPart: some View {
@@ -179,6 +277,9 @@ struct AppearanceSettingsPane: View {
                     rightSlot: previewRightContent,
                     layout: previewLayout,
                     physicalNotchWidth: physicalNotchW,
+                    notchLightingMode: previewLayout == .macbook && model.rogNotchLightingEnabled
+                        ? model.rogNotchLightingMode
+                        : nil,
                     now: context.date
                 )
             }
@@ -609,6 +710,15 @@ struct AppearanceSettingsPane: View {
         switch option {
         case .attention:  lang.t("settings.appearance.sessionSort.attention")
         case .lastUpdate: lang.t("settings.appearance.sessionSort.lastUpdate")
+        }
+    }
+
+    private func title(for mode: ROGNotchLightingMode) -> String {
+        switch mode {
+        case .breathing:    lang.t("settings.appearance.rogLighting.mode.breathing")
+        case .spectrumFlow: lang.t("settings.appearance.rogLighting.mode.spectrumFlow")
+        case .pulse:        lang.t("settings.appearance.rogLighting.mode.pulse")
+        case .staticGlow:   lang.t("settings.appearance.rogLighting.mode.staticGlow")
         }
     }
 

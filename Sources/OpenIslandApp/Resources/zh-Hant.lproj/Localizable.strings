@@ -101,6 +101,14 @@
 "settings.appearance.staleThreshold.tenMinutes" = "10 分鐘";
 "settings.appearance.staleThreshold.twentyMinutes" = "20 分鐘";
 "settings.appearance.staleThreshold.never" = "永不";
+"settings.appearance.rogLighting.title" = "ROG 設計";
+"settings.appearance.rogLighting.note" = "圍繞 MacBook 劉海的多層霓虹燈帶；外接螢幕保持不變。";
+"settings.appearance.rogLighting.enable" = "開啟 ROG 燈效";
+"settings.appearance.rogLighting.enableNote" = "在劉海外圈疊加品紅、紫色、青色與藍色的一圈圈漸層霓虹。";
+"settings.appearance.rogLighting.mode.breathing" = "呼吸霓虹";
+"settings.appearance.rogLighting.mode.spectrumFlow" = "光譜流光";
+"settings.appearance.rogLighting.mode.pulse" = "能量脈衝";
+"settings.appearance.rogLighting.mode.staticGlow" = "常亮霓虹";
 "settings.appearance.preview.permissionNeeded" = "需要授權";
 "settings.appearance.preview.agentEditing" = "Claude · 正在編輯";
 "settings.appearance.preview.approveShellCommand" = "核准 Shell 命令";

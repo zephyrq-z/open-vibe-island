@@ -31,6 +31,8 @@ final class AppModel {
     private static let legacyIslandSessionSortDefaultsKey = "appearance.island.v8.sessionSort"
     private static let legacyCompletedStaleThresholdDefaultsKey = "appearance.island.v8.completedStaleThreshold"
     private static let appearanceProfileSettingsDefaultsKey = "appearance.island.v8.settingsProfile"
+    private static let rogNotchLightingEnabledDefaultsKey = "appearance.notch.rogLighting.enabled"
+    private static let rogNotchLightingModeDefaultsKey = "appearance.notch.rogLighting.mode"
 
     private static let syntheticClaudeSessionPrefix = "claude-process:"
     private static let liveSessionStalenessWindow: TimeInterval = 15 * 60
@@ -268,6 +270,20 @@ final class AppModel {
         didSet {
             guard hasFinishedInit, hapticFeedbackEnabled != oldValue else { return }
             UserDefaults.standard.set(hapticFeedbackEnabled, forKey: Self.hapticFeedbackEnabledDefaultsKey)
+        }
+    }
+    /// ROG-style neon rings around the physical MacBook notch. Global on
+    /// purpose: the effect is only rendered on notch-aware displays.
+    var rogNotchLightingEnabled: Bool = false {
+        didSet {
+            guard hasFinishedInit, rogNotchLightingEnabled != oldValue else { return }
+            UserDefaults.standard.set(rogNotchLightingEnabled, forKey: Self.rogNotchLightingEnabledDefaultsKey)
+        }
+    }
+    var rogNotchLightingMode: ROGNotchLightingMode = .breathing {
+        didSet {
+            guard hasFinishedInit, rogNotchLightingMode != oldValue else { return }
+            UserDefaults.standard.set(rogNotchLightingMode.rawValue, forKey: Self.rogNotchLightingModeDefaultsKey)
         }
     }
     /// Keep the island open until the user acts on a pending approval /
@@ -631,11 +647,17 @@ final class AppModel {
             Self.keepNotchOpenUntilDecisionDefaultsKey: false,
             Self.completionReplyEnabledDefaultsKey: false,
             Self.suppressFrontmostNotificationsDefaultsKey: true,
+            Self.rogNotchLightingEnabledDefaultsKey: false,
+            Self.rogNotchLightingModeDefaultsKey: ROGNotchLightingMode.breathing.rawValue,
         ])
         isSoundMuted = UserDefaults.standard.bool(forKey: Self.soundMutedDefaultsKey)
         selectedSoundName = NotificationSoundService.selectedSoundName
         showDockIcon = UserDefaults.standard.bool(forKey: Self.showDockIconDefaultsKey)
         hapticFeedbackEnabled = UserDefaults.standard.bool(forKey: Self.hapticFeedbackEnabledDefaultsKey)
+        rogNotchLightingEnabled = UserDefaults.standard.bool(forKey: Self.rogNotchLightingEnabledDefaultsKey)
+        rogNotchLightingMode = ROGNotchLightingMode(
+            rawValue: UserDefaults.standard.string(forKey: Self.rogNotchLightingModeDefaultsKey) ?? ""
+        ) ?? .breathing
         keepNotchOpenUntilDecision = UserDefaults.standard.bool(forKey: Self.keepNotchOpenUntilDecisionDefaultsKey)
         suppressFrontmostNotifications = UserDefaults.standard.bool(forKey: Self.suppressFrontmostNotificationsDefaultsKey)
         if UserDefaults.standard.object(forKey: Self.showCodexUsageDefaultsKey) != nil {

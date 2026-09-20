@@ -341,6 +341,7 @@ struct IslandPreviewPill: View {
     let rightSlot: IslandRightSlotContent?
     let layout: V6ClosedLayout
     let physicalNotchWidth: CGFloat
+    var notchLightingMode: ROGNotchLightingMode?
     let now: Date
 
     var body: some View {
@@ -351,6 +352,11 @@ struct IslandPreviewPill: View {
             layout: layout,
             physicalNotchWidth: physicalNotchWidth
         )
+        .background {
+            if let notchLightingMode {
+                ROGNotchLightingEffect(shape: V6ClosedPillShape(), mode: notchLightingMode)
+            }
+        }
         .frame(maxWidth: .infinity, alignment: .center)
     }
 }

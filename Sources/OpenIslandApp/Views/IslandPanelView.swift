@@ -211,6 +211,16 @@ struct IslandPanelView: View {
 
         VStack(spacing: 0) {
             ZStack(alignment: .top) {
+                if model.rogNotchLightingEnabled, usesNotchAwareOpenedHeader {
+                    ROGNotchLightingEffect(shape: transitionSurfaceShape, mode: model.rogNotchLightingMode)
+                        .frame(
+                            width: usesOpenedVisualState ? openedWidth : resolvedClosedPill.resolvedWidth,
+                            height: usesOpenedVisualState ? openedHeight : closedNotchHeight
+                        )
+                        .opacity(usesOpenedVisualState ? 0 : 1)
+                        .animation(.easeOut(duration: 0.18), value: usesOpenedVisualState)
+                }
+
                 transitioningSurface(
                     openedWidth: openedWidth,
                     openedHeight: openedHeight,

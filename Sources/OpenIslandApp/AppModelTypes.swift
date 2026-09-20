@@ -53,6 +53,19 @@ enum IslandAppearanceDisplayProfile: String, CaseIterable, Identifiable, Sendabl
     var id: String { rawValue }
 }
 
+/// Optional ROG-inspired lighting around the MacBook notch.
+///
+/// The setting is global rather than display-profile-specific: it only has a
+/// visual effect when the overlay is placed on a built-in notch display.
+enum ROGNotchLightingMode: String, CaseIterable, Identifiable, Sendable {
+    case breathing
+    case spectrumFlow
+    case pulse
+    case staticGlow
+
+    var id: String { rawValue }
+}
+
 struct IslandAppearancePreferences: Equatable, Sendable {
     var rightSlot: IslandRightSlot = .count
     var centerLabel: IslandCenterLabel = .agentAction
