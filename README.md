@@ -308,7 +308,7 @@ Developers who already live in the terminal and want a better way to work with c
   swift run OpenIslandSetup statusHermes     # report whether managed hooks are present
   swift run OpenIslandSetup uninstallHermes  # remove managed entries, preserve user-authored hooks
   ```
-- **Evosci** — Process-based integration for the local EvoScientist launcher (`evosci`, commonly visible as `python …/.local/bin/evosci`). Open Island detects the launcher with `ps`, resolves its working directory with `lsof`, creates a synthetic running session, and uses the parent terminal/TTY for jump-back. Evosci v1 has no Open Island hook channel, so it does not provide lifecycle events, permission/turn-completion cards, reply routing, or usage tracking; the session disappears when the launcher process exits.
+- **Evosci** — Process-based integration for the local EvoScientist launcher (`evosci`, commonly visible as `python …/.local/bin/evosci`). Open Island detects the launcher with `ps`, resolves its working directory with `lsof`, creates a synthetic running session, and uses the parent terminal/TTY for jump-back. Evosci v1 has no Open Island hook channel, so it does not provide lifecycle events, permission/turn-completion cards, reply routing, or usage tracking; the session disappears when the launcher process exits. It appears under **Settings → Setup → Process Detection** with no install or uninstall action.
 
 
 ### Terminal Support

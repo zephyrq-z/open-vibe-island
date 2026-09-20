@@ -144,6 +144,10 @@
 "setup.claudeConfigDir.reset" = "Reset";
 "setup.claudeConfigDir.footer" = "For users who run Claude Code with CLAUDE_CONFIG_DIR. Leave default unless you use a custom config path.";
 "setup.section.hooks" = "CLI Hooks";
+"setup.section.processDiscovery" = "Process Detection";
+"setup.processDiscovery.noSetupRequired" = "No setup required";
+"setup.processDiscovery.detected" = "Detected";
+"setup.evosci.description" = "Evosci is detected automatically while its local launcher is running. It does not use hooks, so lifecycle events are unavailable in v1.";
 "setup.section.usage" = "Usage Bridge";
 "setup.section.permissions" = "Permissions";
 "setup.binaryReady" = "Ready";

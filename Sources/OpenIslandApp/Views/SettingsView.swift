@@ -704,6 +704,14 @@ struct SetupSettingsPane: View {
                 }
             }
 
+            Section(lang.t("setup.section.processDiscovery")) {
+                processDiscoveryRow(
+                    name: "Evosci",
+                    description: lang.t("setup.evosci.description"),
+                    detected: model.hasActiveEvosciSession
+                )
+            }
+
             Section {
                 HStack {
                     Label(lang.t("setup.usageBridge"), systemImage: "chart.bar")
@@ -995,6 +1003,31 @@ struct SetupSettingsPane: View {
         case .info: .blue
         case .error: issue.isAutoRepairable ? .orange : .red
         }
+    }
+
+    @ViewBuilder
+    private func processDiscoveryRow(
+        name: String,
+        description: String,
+        detected: Bool
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack {
+                Label(name, systemImage: "dot.radiowaves.left.and.right")
+                Spacer()
+                HStack(spacing: 4) {
+                    Image(systemName: detected ? "checkmark.circle.fill" : "checkmark.circle")
+                        .foregroundStyle(detected ? .green : .blue)
+                    Text(lang.t(detected ? "setup.processDiscovery.detected" : "setup.processDiscovery.noSetupRequired"))
+                        .foregroundStyle(.secondary)
+                }
+                .font(.caption)
+            }
+            Text(description)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .padding(.vertical, 2)
     }
 
     @ViewBuilder

@@ -310,7 +310,7 @@ AI coding 正在成为日常开发流程的一部分，但围绕它的控制层�
   swift run OpenIslandSetup statusHermes     # 查看受管 hooks 是否已安装
   swift run OpenIslandSetup uninstallHermes  # 移除受管条目，保留用户自建 hooks
   ```
-- **Evosci** — 本地 EvoScientist 启动器（`evosci`，进程里常见为 `python …/.local/bin/evosci`）采用进程级集成。Open Island 通过 `ps` 检测启动器、用 `lsof` 解析工作目录，创建合成运行中会话，并使用父终端/TTY 完成跳回。Evosci v1 没有 Open Island hook 通道，因此不提供生命周期事件、权限/turn 完成卡片、回复路由或用量追踪；启动器进程退出后，会话随之消失。
+- **Evosci** — 本地 EvoScientist 启动器（`evosci`，进程里常见为 `python …/.local/bin/evosci`）采用进程级集成。Open Island 通过 `ps` 检测启动器、用 `lsof` 解析工作目录，创建合成运行中会话，并使用父终端/TTY 完成跳回。Evosci v1 没有 Open Island hook 通道，因此不提供生命周期事件、权限/turn 完成卡片、回复路由或用量追踪；启动器进程退出后，会话随之消失。它会显示在「设置 → 安装引导 → 进程检测」中，没有安装或卸载操作。
 
 
 ### 终端支持

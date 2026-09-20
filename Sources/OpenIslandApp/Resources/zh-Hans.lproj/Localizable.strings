@@ -144,6 +144,10 @@
 "setup.claudeConfigDir.reset" = "重置";
 "setup.claudeConfigDir.footer" = "适用于通过 CLAUDE_CONFIG_DIR 使用自定义配置路径启动 Claude Code 的用户。如无需要请保持默认。";
 "setup.section.hooks" = "CLI Hooks";
+"setup.section.processDiscovery" = "进程检测";
+"setup.processDiscovery.noSetupRequired" = "无需安装";
+"setup.processDiscovery.detected" = "已检测到";
+"setup.evosci.description" = "Evosci 在本地启动器运行时会被自动检测。它不使用 hooks，因此 v1 不提供生命周期事件。";
 "setup.section.usage" = "用量桥接";
 "setup.section.permissions" = "权限";
 "setup.binaryReady" = "就绪";

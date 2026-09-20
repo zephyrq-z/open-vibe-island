@@ -192,6 +192,14 @@ final class AppModel {
             || hooks.piExtensionInstalled
             || hooks.ohMyPiExtensionInstalled
     }
+
+    /// True when a non-demo, non-ended Evosci process session is visible.
+    /// Setup shows this as live process detection rather than hook installation.
+    var hasActiveEvosciSession: Bool {
+        state.sessions.contains {
+            $0.tool == .evosci && !$0.isDemoSession && !$0.isSessionEnded
+        }
+    }
     func refreshCodexHookStatus() { hooks.refreshCodexHookStatus() }
     func refreshClaudeHookStatus() { hooks.refreshClaudeHookStatus() }
     func refreshOpenCodePluginStatus() { hooks.refreshOpenCodePluginStatus() }
