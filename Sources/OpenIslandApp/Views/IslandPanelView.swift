@@ -211,21 +211,22 @@ struct IslandPanelView: View {
 
         VStack(spacing: 0) {
             ZStack(alignment: .top) {
+                transitioningSurface(
+                    openedWidth: openedWidth,
+                    openedHeight: openedHeight,
+                    closedPill: resolvedClosedPill
+                )
+
+                // Keep the neon edge above the opaque transition surface so
+                // the full ring remains visible when the island is expanded.
                 if model.rogNotchLightingEnabled, usesNotchAwareOpenedHeader {
                     ROGNotchLightingEffect(shape: transitionSurfaceShape, mode: model.rogNotchLightingMode)
                         .frame(
                             width: usesOpenedVisualState ? openedWidth : resolvedClosedPill.resolvedWidth,
                             height: usesOpenedVisualState ? openedHeight : closedNotchHeight
                         )
-                        .opacity(usesOpenedVisualState ? 0 : 1)
-                        .animation(.easeOut(duration: 0.18), value: usesOpenedVisualState)
+                        .allowsHitTesting(false)
                 }
-
-                transitioningSurface(
-                    openedWidth: openedWidth,
-                    openedHeight: openedHeight,
-                    closedPill: resolvedClosedPill
-                )
 
                 if shouldRenderOpenedSurface {
                     openedSurfaceContent(width: openedWidth, height: openedHeight)
