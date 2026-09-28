@@ -62,6 +62,9 @@ struct ActiveAgentProcessDiscovery {
         }
 
         let processesByPID = Dictionary(uniqueKeysWithValues: processes.map { ($0.pid, $0) })
+        let hasEvosciLauncherProcess = processes.contains {
+            isEvosciLauncherProcess(command: $0.command)
+        }
 
         var snapshots: [ProcessSnapshot] = []
         var claimedKeys: Set<String> = []
@@ -78,7 +81,8 @@ struct ActiveAgentProcessDiscovery {
             if process.terminalTTY == nil
                 && !isOpenCodeProcess(command: process.command)
                 && !isHermesProcess(command: process.command)
-                && !isZcodeProcess(command: process.command) {
+                && !isZcodeProcess(command: process.command)
+                && !isEvosciProcess(command: process.command) {
                 continue
             }
 
@@ -280,7 +284,14 @@ struct ActiveAgentProcessDiscovery {
                 // Evosci launches as a Python entry-point wrapper. The
                 // langgraph child process is intentionally not matched: the
                 // wrapper owns the terminal-facing session, while the child is
-                // an implementation detail.
+                // an implementation detail. The web UI is only a fallback when
+                // the launcher is not visible; preferring one owner avoids
+                // duplicate synthetic sessions for launcher/npm/web UI.
+                guard isEvosciLauncherProcess(command: process.command)
+                    || (!hasEvosciLauncherProcess && isEvosciWebUIProcess(command: process.command)) else {
+                    continue
+                }
+
                 let claimKey = "evosci:\(process.pid)"
                 guard claimedKeys.insert(claimKey).inserted else {
                     continue
@@ -915,6 +926,11 @@ struct ActiveAgentProcessDiscovery {
     /// appear either as `evosci` or as `python .../evosci`; requiring the
     /// executable basename avoids accidental matches such as `grep evosci`.
     private func isEvosciProcess(command: String) -> Bool {
+        isEvosciLauncherProcess(command: command)
+            || isEvosciWebUIProcess(command: command)
+    }
+
+    private func isEvosciLauncherProcess(command: String) -> Bool {
         let lowered = command.lowercased()
         let tokens = lowered.split(whereSeparator: \.isWhitespace).map(String.init)
         guard let executable = tokens.first else {
@@ -932,6 +948,24 @@ struct ActiveAgentProcessDiscovery {
         }
 
         return (entryPoint as NSString).lastPathComponent == "evosci"
+    }
+
+    /// Matches the canonical Evosci web UI process. `npm exec` is deliberately
+    /// not matched because its child process is the actual web UI; matching both
+    /// would create duplicate synthetic sessions.
+    private func isEvosciWebUIProcess(command: String) -> Bool {
+        let lowered = command.lowercased()
+        let tokens = lowered.split(whereSeparator: \.isWhitespace).map(String.init)
+        guard let executable = tokens.first,
+              let entryPoint = tokens.dropFirst().first else {
+            return false
+        }
+
+        let executableName = (executable as NSString).lastPathComponent
+        let entryPointName = (entryPoint as NSString).lastPathComponent
+
+        return executableName == "evoscientist-webui"
+            || (executableName == "node" && entryPointName == "evoscientist-webui")
     }
 
     /// Matches the Hermes Agent gateway (`python -m tui_gateway.entry`) and the

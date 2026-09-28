@@ -381,6 +381,88 @@ struct ActiveAgentProcessDiscoveryTests {
     }
 
     @Test
+    func discoverDetectsDetachedEvosciWebProcessOnce() {
+        let discovery = ActiveAgentProcessDiscovery { executablePath, arguments in
+            if executablePath == "/bin/ps" {
+                return """
+                  11840 42866 ?? /opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python /Users/zzq/.local/bin/evosci
+                  11879 11840 ?? /opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python /Users/zzq/.local/share/uv/tools/evoscientist/bin/langgraph dev --port 6174
+                  11981 11840 ?? npm exec @evoscientist/webui@latest --port 4716
+                  12001 11981 ?? node /Users/zzq/.npm/_npx/9ff18956a4405318/node_modules/.bin/evoscientist-webui --port 4716
+                  42866 42782 ?? /Users/zzq/.hermes/hermes-agent/venv/bin/python3 -I -c import hermes
+                  42782 1 ?? /Users/zzq/.hermes/hermes-agent/apps/desktop/release/mac-arm64/Hermes.app/Contents/MacOS/Hermes
+                """
+            }
+
+            guard executablePath == "/usr/sbin/lsof",
+                  let pid = arguments.dropFirst(2).first else {
+                return nil
+            }
+
+            guard pid == "11840" else {
+                Issue.record("unexpected lsof lookup for pid \(pid)")
+                return nil
+            }
+
+            return """
+            fcwd
+            n/Users/zzq/Documents/EvoSci
+            """
+        }
+
+        let snapshots = discovery.discover()
+
+        #expect(snapshots == [
+            .init(
+                tool: .evosci,
+                sessionID: nil,
+                workingDirectory: "/Users/zzq/Documents/EvoSci",
+                terminalTTY: nil,
+                terminalApp: nil
+            ),
+        ])
+    }
+
+    @Test
+    func discoverUsesEvosciWebUIProcessWhenLauncherIsNotVisible() {
+        let discovery = ActiveAgentProcessDiscovery { executablePath, arguments in
+            if executablePath == "/bin/ps" {
+                return """
+                  11981 800 ?? npm exec @evoscientist/webui@latest --port 4716
+                  12001 11981 ?? node /Users/zzq/.npm/_npx/9ff18956a4405318/node_modules/.bin/evoscientist-webui --port 4716
+                """
+            }
+
+            guard executablePath == "/usr/sbin/lsof",
+                  let pid = arguments.dropFirst(2).first else {
+                return nil
+            }
+
+            guard pid == "12001" else {
+                Issue.record("unexpected lsof lookup for pid \(pid)")
+                return nil
+            }
+
+            return """
+            fcwd
+            n/Users/zzq/Documents/EvoSci
+            """
+        }
+
+        let snapshots = discovery.discover()
+
+        #expect(snapshots == [
+            .init(
+                tool: .evosci,
+                sessionID: nil,
+                workingDirectory: "/Users/zzq/Documents/EvoSci",
+                terminalTTY: nil,
+                terminalApp: nil
+            ),
+        ])
+    }
+
+    @Test
     func discoverDetectsOpenCodeProcessWithoutTTY() {
         let discovery = ActiveAgentProcessDiscovery { executablePath, arguments in
             if executablePath == "/bin/ps" {
